@@ -100,4 +100,9 @@ class User
     }
 
 
+    public static function logout(): array
+    {
+        auth('sanctum')->user()->tokens()->delete();
+        return ['success' => true];
+    }
 }
