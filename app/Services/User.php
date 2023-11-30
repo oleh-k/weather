@@ -30,10 +30,13 @@ class User
                 'password' => bcrypt($request['password'])
             ]);
 
+            $token = $userModel->createToken($request['password'] . 'myapp_bard')->plainTextToken;
+
             if ($userModel) {
 
                 $response = [
                     "success" => true,
+                    "token" => $token,
                     "message" => $userModel
                 ];
                 return $response;
