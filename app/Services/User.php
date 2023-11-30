@@ -30,7 +30,7 @@ class User
                 'password' => bcrypt($request['password'])
             ]);
 
-            $token = $userModel->createToken($request['password'] . 'myapp_bard')->plainTextToken;
+            $token = $userModel->createToken($request['password'] . 'myapp_weather')->plainTextToken;
 
             if ($userModel) {
 
