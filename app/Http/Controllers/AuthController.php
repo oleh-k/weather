@@ -11,4 +11,9 @@ class AuthController extends Controller
     {
         return User::register($request);
     }
+
+    public function login(Request $request)
+    {
+        return User::login($request);
+    }
 }

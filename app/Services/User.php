@@ -4,6 +4,7 @@ namespace App\Services;
 
 
 use App\Models\User as userModel;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class User
@@ -49,4 +50,54 @@ class User
             }
         }
     }
+
+    public static function login($request): array
+    {
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email:rfc',
+            'password' => 'required|min:6|max:64',
+        ]);
+
+        if ($validator->fails()) {
+            $response = [
+                "success" => false,
+                "message" => $validator->errors()
+            ];
+            return $response;
+        } else {
+
+            $userModel = userModel::where('email', $request['email'])->first();
+
+            if (!$userModel || !Hash::check($request['password'], $userModel->password)) {
+
+                $response = [
+                    "success" => false,
+                    "message" => "bad creds"
+                ];
+                return $response;;
+            }
+
+            $token = $userModel->createToken($request['password'] . 'myapp_bard')->plainTextToken;
+
+            if ($token) {
+
+                $response = [
+                    "success" => true,
+                    "token" => $token,
+                    "message" => $userModel
+                ];
+                return $response;
+            } else {
+
+                $response = [
+                    "success" => false,
+                    "message" => "bad creds"
+                ];
+                return $response;
+            }
+        }
+    }
+
+
 }
