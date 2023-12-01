@@ -18,7 +18,7 @@ class WeatherAPI
     {
         $curl = curl_init();
 
-        $url = "https://weatherapi-com.p.rapidapi.com/forecast.json?q=Kyiv&days=3";
+        $url = "https://weatherapi-com.p.rapidapi.com/forecast.json?q=$this->city&days=$this->days";
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
@@ -29,19 +29,27 @@ class WeatherAPI
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => [
                 "X-RapidAPI-Host: weatherapi-com.p.rapidapi.com",
-                "X-RapidAPI-Key: ".$_ENV['WEATHER_API_KEY']
+                "X-RapidAPI-Key: " . $_ENV['WEATHER_API_KEY']
             ],
         ]);
 
-        $response = curl_exec($curl);
+        $res = curl_exec($curl);
         $err = curl_error($curl);
 
         curl_close($curl);
 
         if ($err) {
-            return $err;
+            $response = [
+                "success" => false,
+                "message" => $err,
+            ];
         } else {
-            return $response;
+            $response = [
+                "success" => true,
+                "message" => json_decode($res),
+            ];
         }
+
+        return $response;
     }
 }
