@@ -8,10 +8,10 @@ class WeatherAPI
     public $city;
     public $days;
 
-    public function __construct(string $city, int $days = 3)
+    public function __construct(array $request)
     {
-        $this->city = $city;
-        $this->days = $days;
+        $this->city = isset($request["city"]) ? $request["city"] : 'Kyiv';
+        $this->days = isset($request["days"]) ? $request["days"] : '3';
     }
 
     public function getWeather()
