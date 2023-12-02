@@ -61,4 +61,9 @@ class WeatherAPI
         return ["success"=> true];
     }
 
+
+    public static function getCached()
+    {
+        return json_decode(Redis::get('test'));
+    }
 }

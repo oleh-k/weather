@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class WeatherAPIController extends Controller
 {
-    public function getWeather(Request $request) {
+    public function getWeather(Request $request)
+    {
 
         $weather = new WeatherAPI($request->all());
         $response = $weather->getWeather();
@@ -22,5 +23,10 @@ class WeatherAPIController extends Controller
     public function setCache(Request $request)
     {
         return WeatherAPI::setCache($request->all());
+    }
+
+    public function getCached()
+    {
+        return WeatherAPI::getCached();
     }
 }
