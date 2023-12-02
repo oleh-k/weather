@@ -12,7 +12,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/weather', [WeatherAPIController::class, 'getWeather']);
+    Route::get('/weather/cache', [WeatherAPIController::class, 'getCached']);
 });
-Route::post('/weather/cache', [WeatherAPIController::class, 'setCache']);
-Route::get('/weather/cache', [WeatherAPIController::class, 'getCached']);
 

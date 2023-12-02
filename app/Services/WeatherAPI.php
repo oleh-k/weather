@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 
 class WeatherAPI
@@ -50,20 +51,26 @@ class WeatherAPI
                 "success" => true,
                 "message" => json_decode($res),
             ];
+            $this->setCache($response);
         }
 
         return $response;
     }
 
-    public static function setCache(array $request)
+    public static function setCache(array $data)
     {
-        Redis::set("test", json_encode($request));
-        return ["success"=> true];
+        $user = Auth::user();
+        Redis::set("forecast:$user->id", json_encode($data));
+        return ["success" => true];
     }
 
 
     public static function getCached()
     {
+        $user = Auth::user();
+        return json_decode(Redis::get("forecast:$user->id"));
+    }
+
         return json_decode(Redis::get('test'));
     }
 }
