@@ -18,4 +18,9 @@ class WeatherAPIController extends Controller
             return response($request, 400);
         }
     }
+
+    public function setCache(Request $request)
+    {
+        return WeatherAPI::setCache($request->all());
+    }
 }
