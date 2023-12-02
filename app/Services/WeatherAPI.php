@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Redis;
+
 class WeatherAPI
 {
 
@@ -51,5 +53,17 @@ class WeatherAPI
         }
 
         return $response;
+    }
+
+    public static function setCache(array $request)
+    {
+        Redis::set("test", json_encode($request));
+        return ["success"=> true];
+    }
+
+
+    public static function getCached()
+    {
+        return json_decode(Redis::get('test'));
     }
 }
