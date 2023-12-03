@@ -52,13 +52,13 @@ class WeatherAPI
                 "success" => true,
                 "message" => $message,
             ];
-            $this->setCache($response);
+            $this->setCache($message);
         }
 
         return $response;
     }
 
-    public static function setCache(array $data)
+    private function setCache(array $data)
     {
         $user = Auth::user();
         Redis::set("forecast:$user->id", json_encode($data));
