@@ -11,7 +11,7 @@ class WeatherAPI
     public $city;
     public $days;
 
-    public function __construct(array $request)
+    public function __construct(array $request = [])
     {
         $this->city = isset($request["city"]) ? $request["city"] : 'Kyiv';
         $this->days = isset($request["days"]) ? $request["days"] : '3';
