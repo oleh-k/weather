@@ -47,9 +47,10 @@ class WeatherAPI
                 "message" => $err,
             ];
         } else {
+            $message = $this->parseData(json_decode($res));
             $response = [
                 "success" => true,
-                "message" => json_decode($res),
+                "message" => $message,
             ];
             $this->setCache($response);
         }
