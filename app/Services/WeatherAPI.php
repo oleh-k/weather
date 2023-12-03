@@ -71,6 +71,28 @@ class WeatherAPI
         return json_decode(Redis::get("forecast:$user->id"));
     }
 
-        return json_decode(Redis::get('test'));
+    private function parseData($data): array
+    {
+
+        $city = $data->location->name;
+        $forecast = [];
+        foreach ($data->forecast->forecastday as $key => $v) {
+            $dailyForecast = [
+                "date" => $v->date,
+                "maxtemp" => $v->day->maxtemp_c,
+                "mintemp" => $v->day->mintemp_c,
+                "avgtemp" => $v->day->avgtemp_c,
+                "daily_chance_of_rain" => $v->day->daily_chance_of_rain,
+                "daily_chance_of_snow" => $v->day->daily_chance_of_snow,
+            ];
+            array_push($forecast, $dailyForecast);
+        }
+
+        $response = [
+            "city" => $city,
+            "forecast" => $forecast
+        ];
+
+        return $response;
     }
 }
