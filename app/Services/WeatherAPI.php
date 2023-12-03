@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 
 class WeatherAPI
@@ -10,7 +11,7 @@ class WeatherAPI
     public $city;
     public $days;
 
-    public function __construct(array $request)
+    public function __construct(array $request = [])
     {
         $this->city = isset($request["city"]) ? $request["city"] : 'Kyiv';
         $this->days = isset($request["days"]) ? $request["days"] : '3';
@@ -46,24 +47,53 @@ class WeatherAPI
                 "message" => $err,
             ];
         } else {
+            $message = $this->parseData(json_decode($res));
             $response = [
                 "success" => true,
-                "message" => json_decode($res),
+                "message" => $message,
             ];
+            $this->setCache($message);
         }
 
         return $response;
     }
 
-    public static function setCache(array $request)
+    private function setCache(array $data)
     {
-        Redis::set("test", json_encode($request));
-        return ["success"=> true];
+        $user = Auth::user();
+        Redis::set("forecast:$user->id", json_encode($data));
+        return ["success" => true];
     }
 
 
     public static function getCached()
     {
-        return json_decode(Redis::get('test'));
+        $user = Auth::user();
+        return json_decode(Redis::get("forecast:$user->id"));
+    }
+
+    private function parseData($data): array
+    {
+
+        $city = $data->location->name;
+        $forecast = [];
+        foreach ($data->forecast->forecastday as $key => $v) {
+            $dailyForecast = [
+                "date" => $v->date,
+                "maxtemp" => $v->day->maxtemp_c,
+                "mintemp" => $v->day->mintemp_c,
+                "avgtemp" => $v->day->avgtemp_c,
+                "daily_chance_of_rain" => $v->day->daily_chance_of_rain,
+                "daily_chance_of_snow" => $v->day->daily_chance_of_snow,
+            ];
+            array_push($forecast, $dailyForecast);
+        }
+
+        $response = [
+            "city" => $city,
+            "forecast" => $forecast
+        ];
+
+        return $response;
     }
 }
