@@ -34,4 +34,25 @@ class City
             return $response;
         }
     }
+
+    public static function destroy(int $id)
+    {
+        $city = CityModel::find($id);
+
+        if (!$city) {
+            $response = [
+                "success" => false,
+                "message" => "City not found",
+            ];
+            return $response;
+        }
+
+        $city->delete();
+
+        $response = [
+            "success" => true,
+            "message" => "City deleted successfully",
+        ];
+        return $response;
+    }
 }

@@ -18,4 +18,10 @@ class CityController extends Controller
     {
         return City::store($request);
     }
+
+
+    public function destroy(int $id)
+    {
+        return City::destroy($id);
+    }
 }
