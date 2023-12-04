@@ -13,4 +13,9 @@ class CityController extends Controller
     {
         return City::index();
     }
+
+    public function store(Request $request)
+    {
+        return City::store($request);
+    }
 }
