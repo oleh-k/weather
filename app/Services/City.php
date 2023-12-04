@@ -37,22 +37,34 @@ class City
 
     public static function destroy(int $id)
     {
-        $city = CityModel::find($id);
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|exists:cities,id',
+        ]);
 
-        if (!$city) {
+        if ($validator->fails()) {
             $response = [
                 "success" => false,
-                "message" => "City not found",
+                "message" => $validator->errors()
+            ];
+            return $response;
+        } else {
+            $city = CityModel::find($id);
+
+            if (!$city) {
+                $response = [
+                    "success" => false,
+                    "message" => "City not found",
+                ];
+                return $response;
+            }
+
+            $city->delete();
+
+            $response = [
+                "success" => true,
+                "message" => "City deleted successfully",
             ];
             return $response;
         }
-
-        $city->delete();
-
-        $response = [
-            "success" => true,
-            "message" => "City deleted successfully",
-        ];
-        return $response;
     }
 }
