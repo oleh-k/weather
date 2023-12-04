@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\City as CityModel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class City
 {
