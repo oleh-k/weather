@@ -26,6 +26,12 @@ return new class extends Migration
                 ->on('users')
                 ->onDelete('cascade');
 
+            $table->unsignedBigInteger('forecast_archive_id');
+            $table->foreign('forecast_archive_id')
+                ->references('id')
+                ->on('forecast_archives')
+                ->onDelete('cascade');
+
             $table->date('date');
             $table->float('maxtemp');
             $table->float('mintemp');
@@ -52,12 +58,6 @@ return new class extends Migration
                 ->on('users')
                 ->onDelete('cascade');
 
-            $table->unsignedBigInteger('forecast_data_id');
-            $table->foreign('forecast_data_id')
-                ->references('id')
-                ->on('forecast_data')
-                ->onDelete('cascade');
-            
             $table->timestamps();
         });
     }
