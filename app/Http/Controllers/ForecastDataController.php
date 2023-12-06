@@ -18,6 +18,6 @@ class ForecastDataController extends Controller
 
     public function showSavedForecastList()
     {
-        return 'showSavedForecastList';
+        return ForecastData::showSavedForecastList();
     }
 }
