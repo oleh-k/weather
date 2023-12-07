@@ -7,16 +7,22 @@ use Illuminate\Support\Facades\DB;
 
 class ForecastData
 {
-    public static function saveForecast()
+    public static function saveForecast($request)
     {
-
         $forecastArchive = [
-            "name" => "name",
+            "name" => $request['name'],
             "city_id" => "3",
             "user_id" => auth()->user()->id,
         ];
 
-        return ForecastArchive::create($forecastArchive);
+        $message = ForecastArchive::create($forecastArchive);
+
+        $response = [
+            "success" => true,
+            "message" => $message,
+        ];
+
+        return $response;
     }
 
     public static function showSavedForecastList()
