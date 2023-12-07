@@ -4,14 +4,20 @@ namespace App\Services;
 
 use App\Models\ForecastArchive;
 use Illuminate\Support\Facades\DB;
+use App\Models\City as CityModel;
+
 
 class ForecastData
 {
     public static function saveForecast($request)
     {
+        $forecast = WeatherAPI::getCached();
+
+        $city = CityModel::firstOrCreate(['name' => $forecast->city]);
+
         $forecastArchive = [
             "name" => $request['name'],
-            "city_id" => "3",
+            "city_id" => $city->id,
             "user_id" => auth()->user()->id,
         ];
 
