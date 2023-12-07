@@ -4,19 +4,46 @@ namespace App\Services;
 
 use App\Models\ForecastArchive;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use App\Models\City as CityModel;
 
 class ForecastData
 {
-    public static function saveForecast()
+    public static function saveForecast($request)
     {
 
-        $forecastArchive = [
-            "name" => "name",
-            "city_id" => "3",
-            "user_id" => auth()->user()->id,
-        ];
+        $validator = Validator::make($request->all(), [
+            "name" => "required|alpha",
+        ]);
 
-        return ForecastArchive::create($forecastArchive);
+        if ($validator->fails()) {
+
+            $response = [
+                "success" => false,
+                "message" => $validator->errors(),
+            ];
+            return $response;
+        } else {
+
+            $forecast = WeatherAPI::getCached();
+
+            $city = CityModel::firstOrCreate(['name' => $forecast->city]);
+
+            $forecastArchive = [
+                "name" => $request['name'],
+                "city_id" => $city->id,
+                "user_id" => auth()->user()->id,
+            ];
+
+            $message = ForecastArchive::create($forecastArchive);
+
+            $response = [
+                "success" => true,
+                "message" => $message,
+            ];
+
+            return $response;
+        }
     }
 
     public static function showSavedForecastList()

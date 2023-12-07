@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 use App\Services\ForecastData;
-
+use Illuminate\Http\Request;
 
 class ForecastDataController extends Controller
 {
-    public function saveForecast()
+    public function saveForecast(Request $request)
     {
-        return ForecastData::saveForecast();
+        return ForecastData::saveForecast($request);
     }
 
     public function showSavedForecast($id)
