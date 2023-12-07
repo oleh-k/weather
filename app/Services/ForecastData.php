@@ -6,6 +6,7 @@ use App\Models\ForecastArchive;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\City as CityModel;
+use App\Models\ForecastData as ModelsForecastData;
 
 class ForecastData
 {
@@ -37,6 +38,10 @@ class ForecastData
 
             $message = ForecastArchive::create($forecastArchive);
 
+            foreach ($forecast->forecast as $v) {
+                self::saveDataForEachDay($v, $message->id);
+            }
+
             $response = [
                 "success" => true,
                 "message" => $message,
@@ -44,6 +49,22 @@ class ForecastData
 
             return $response;
         }
+    }
+
+    public static function saveDataForEachDay($day, $id)
+    {
+        
+        return ModelsForecastData::create([
+            "user_id"=> auth()->user()->id,
+            "forecast_archive_id"=> $id,
+            "date"=> $day->date,
+            "maxtemp"=> $day->maxtemp,
+            "mintemp"=> $day->mintemp,
+            "avgtemp"=> $day->avgtemp,
+            "daily_chance_of_rain"=> $day->daily_chance_of_rain,
+            "daily_chance_of_snow"=> $day->daily_chance_of_snow,
+        ]);
+        
     }
 
     public static function showSavedForecastList()
