@@ -53,18 +53,17 @@ class ForecastData
 
     public static function saveDataForEachDay($day, $id)
     {
-        
+
         return ModelsForecastData::create([
-            "user_id"=> auth()->user()->id,
-            "forecast_archive_id"=> $id,
-            "date"=> $day->date,
-            "maxtemp"=> $day->maxtemp,
-            "mintemp"=> $day->mintemp,
-            "avgtemp"=> $day->avgtemp,
-            "daily_chance_of_rain"=> $day->daily_chance_of_rain,
-            "daily_chance_of_snow"=> $day->daily_chance_of_snow,
+            "user_id" => auth()->user()->id,
+            "forecast_archive_id" => $id,
+            "date" => $day->date,
+            "maxtemp" => $day->maxtemp,
+            "mintemp" => $day->mintemp,
+            "avgtemp" => $day->avgtemp,
+            "daily_chance_of_rain" => $day->daily_chance_of_rain,
+            "daily_chance_of_snow" => $day->daily_chance_of_snow,
         ]);
-        
     }
 
     public static function showSavedForecastList()
@@ -80,6 +79,33 @@ class ForecastData
             return $response;
         }
 
+        $message = [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'city' => $user->forecastArchives[0]->city->name,
+            'forecast_archives' => $user->forecastArchives->map(function ($archive) {
+                return [
+                    'id' => $archive->id,
+                    'name' => $archive->name,
+                    'forecast_data' => $archive->forecastData->map(function ($data) {
+                        return [
+                            'id' => $data->id,
+                            'date' => $data->date,
+                            'maxtemp' => $data->maxtemp,
+                            'mintemp' => $data->mintemp,
+                            'avgtemp' => $data->avgtemp,
+                            'daily_chance_of_rain' => $data->daily_chance_of_rain,
+                            'daily_chance_of_snow' => $data->daily_chance_of_snow,
+                        ];
+                    }),
+                ];
+            }),
+        ];
+
+        $response = [
+            "success" => true,
+            "message" => $message,
+        ];
 
         return $response;
     }
