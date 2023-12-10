@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Models\ForecastArchive;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\City as CityModel;
 use App\Models\ForecastData as ModelsForecastData;
+use App\Models\User as userModel;
 
 class ForecastData
 {
@@ -70,12 +70,17 @@ class ForecastData
     public static function showSavedForecastList()
     {
 
-        $forecast = DB::table('forecast_archives')
-            ->leftJoin('users', 'forecast_archives.user_id', '=', 'users.id')
-            ->leftJoin('cities', 'forecast_archives.city_id', '=', 'cities.id')
-            ->select('forecast_archives.id', 'forecast_archives.city_id', 'forecast_archives.user_id', 'users.name as user', 'cities.name as city_name')
-            ->get();
+        $user = userModel::with('forecastArchives.city', 'forecastArchives.forecastData')->find(auth()->user()->id);
 
-        return $forecast;
+        if (!$user) {
+            $response = [
+                "success" => false,
+                "message" => "User not found",
+            ];
+            return $response;
+        }
+
+
+        return $response;
     }
 }
