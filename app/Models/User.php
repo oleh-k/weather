@@ -49,4 +49,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function forecastArchives()
+    {
+        return $this->hasMany(ForecastArchive::class, 'user_id');
+    }
+
 }
