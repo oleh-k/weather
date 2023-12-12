@@ -109,4 +109,9 @@ class ForecastData
 
         return $response;
     }
+
+    public static function showSavedForecast($id)
+    {
+        return 'showSavedForecast:'.$id;
+    }
 }
