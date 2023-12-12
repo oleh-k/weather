@@ -14,7 +14,7 @@ class ForecastData
     {
 
         $validator = Validator::make($request->all(), [
-            "name" => "required|alpha",
+            "name" => "required|alpha_num",
         ]);
 
         if ($validator->fails()) {
