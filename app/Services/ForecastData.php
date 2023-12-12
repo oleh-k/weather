@@ -74,7 +74,7 @@ class ForecastData
         if (!$user) {
             $response = [
                 "success" => false,
-                "message" => "User not found",
+                "message" => "data not found",
             ];
             return $response;
         }
