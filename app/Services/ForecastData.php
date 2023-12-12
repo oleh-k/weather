@@ -69,7 +69,7 @@ class ForecastData
     public static function showSavedForecastList()
     {
 
-        $user = userModel::with('forecastArchives.city', 'forecastArchives.forecastData')->find(auth()->user()->id);
+        $user = userModel::with('forecastArchives.city')->find(auth()->user()->id);
 
         if (!$user) {
             $response = [
@@ -82,22 +82,11 @@ class ForecastData
         $message = [
             'user_id' => $user->id,
             'user_name' => $user->name,
-            'city' => $user->forecastArchives[0]->city->name,
             'forecast_archives' => $user->forecastArchives->map(function ($archive) {
                 return [
                     'id' => $archive->id,
+                    'city' => $archive->city->name,
                     'name' => $archive->name,
-                    'forecast_data' => $archive->forecastData->map(function ($data) {
-                        return [
-                            'id' => $data->id,
-                            'date' => $data->date,
-                            'maxtemp' => $data->maxtemp,
-                            'mintemp' => $data->mintemp,
-                            'avgtemp' => $data->avgtemp,
-                            'daily_chance_of_rain' => $data->daily_chance_of_rain,
-                            'daily_chance_of_snow' => $data->daily_chance_of_snow,
-                        ];
-                    }),
                 ];
             }),
         ];
