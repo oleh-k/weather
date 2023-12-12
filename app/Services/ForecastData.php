@@ -112,6 +112,53 @@ class ForecastData
 
     public static function showSavedForecast($id)
     {
-        return 'showSavedForecast:'.$id;
+        $user = userModel::with([
+            'forecastArchives' => function ($query) use ($id) {
+                $query->where('id', $id);
+            },
+            'forecastArchives.city',
+            'forecastArchives.forecastData',
+        ])
+            ->where('id', auth()->user()->id)
+            ->first();
+
+        if (!$user) {
+            $response = [
+                "success" => false,
+                "message" => "data not found",
+            ];
+            return $response;
+        }
+
+        $message = [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'city' => $user->forecastArchives[0]->city->name,
+            'archive_name' => $user->forecastArchives[0]->name,
+            'forecast_archives' => $user->forecastArchives->map(function ($archive) {
+                return [
+                    'id' => $archive->id,
+                    'name' => $archive->name,
+                    'forecast_data' => $archive->forecastData->map(function ($data) {
+                        return [
+                            'id' => $data->id,
+                            'date' => $data->date,
+                            'maxtemp' => $data->maxtemp,
+                            'mintemp' => $data->mintemp,
+                            'avgtemp' => $data->avgtemp,
+                            'daily_chance_of_rain' => $data->daily_chance_of_rain,
+                            'daily_chance_of_snow' => $data->daily_chance_of_snow,
+                        ];
+                    }),
+                ];
+            }),
+        ];
+
+        $response = [
+            "success" => true,
+            "message" => $message,
+        ];
+
+        return $response;
     }
 }
