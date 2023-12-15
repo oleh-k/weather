@@ -13,7 +13,7 @@ class ForecastDataController extends Controller
 
     public function showSavedForecast($id)
     {
-        return 'showSavedForecast:'.$id;
+        return ForecastData::showSavedForecast($id);
     }
 
     public function showSavedForecastList()

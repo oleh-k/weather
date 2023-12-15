@@ -14,7 +14,7 @@ class ForecastData
     {
 
         $validator = Validator::make($request->all(), [
-            "name" => "required|alpha",
+            "name" => "required|alpha_num",
         ]);
 
         if ($validator->fails()) {
@@ -69,12 +69,52 @@ class ForecastData
     public static function showSavedForecastList()
     {
 
-        $user = userModel::with('forecastArchives.city', 'forecastArchives.forecastData')->find(auth()->user()->id);
+        $user = userModel::with('forecastArchives.city')->find(auth()->user()->id);
 
         if (!$user) {
             $response = [
                 "success" => false,
-                "message" => "User not found",
+                "message" => "data not found",
+            ];
+            return $response;
+        }
+
+        $message = [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'forecast_archives' => $user->forecastArchives->map(function ($archive) {
+                return [
+                    'id' => $archive->id,
+                    'city' => $archive->city->name,
+                    'name' => $archive->name,
+                ];
+            }),
+        ];
+
+        $response = [
+            "success" => true,
+            "message" => $message,
+        ];
+
+        return $response;
+    }
+
+    public static function showSavedForecast($id)
+    {
+        $user = userModel::with([
+            'forecastArchives' => function ($query) use ($id) {
+                $query->where('id', $id);
+            },
+            'forecastArchives.city',
+            'forecastArchives.forecastData',
+        ])
+            ->where('id', auth()->user()->id)
+            ->first();
+
+        if (!$user) {
+            $response = [
+                "success" => false,
+                "message" => "data not found",
             ];
             return $response;
         }
@@ -83,6 +123,7 @@ class ForecastData
             'user_id' => $user->id,
             'user_name' => $user->name,
             'city' => $user->forecastArchives[0]->city->name,
+            'archive_name' => $user->forecastArchives[0]->name,
             'forecast_archives' => $user->forecastArchives->map(function ($archive) {
                 return [
                     'id' => $archive->id,
