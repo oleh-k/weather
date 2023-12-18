@@ -14,5 +14,8 @@
         "sass": "^1.56.1",
         "vite": "^4.0.0",
         "vue": "^3.2.36"
+    },
+    "dependencies": {
+        "element-plus": "^2.4.4"
     }
 }
