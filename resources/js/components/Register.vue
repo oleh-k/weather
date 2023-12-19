@@ -10,8 +10,17 @@
                     class="demo-ruleForm"
                     status-icon
                 >
-                    <el-form-item label="Activity name" prop="name">
+                    <el-form-item label="Name" prop="name">
                         <el-input v-model="ruleForm.name" />
+                    </el-form-item>
+                    <el-form-item label="Email" prop="email">
+                        <el-input v-model="ruleForm.email" />
+                    </el-form-item>
+                    <el-form-item label="Password" prop="password">
+                        <el-input type="password" v-model="ruleForm.password" />
+                    </el-form-item>
+                    <el-form-item label="Confirm password" prop="password_confirmation">
+                        <el-input type="password" v-model="ruleForm.password_confirmation" />
                     </el-form-item>
                     <el-form-item>
                         <el-button
@@ -36,21 +45,50 @@ import type { FormInstance, FormRules } from "element-plus";
 
 interface RuleForm {
     name: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
 }
 
 const ruleFormRef = ref<FormInstance>();
 const ruleForm = reactive<RuleForm>({
     name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
 });
 
 const rules = reactive<FormRules<RuleForm>>({
     name: [
         {
             required: true,
-            message: "Please input Activity name",
+            message: "Please input Name",
             trigger: "blur",
         },
-        { min: 3, max: 5, message: "Length should be 3 to 5", trigger: "blur" },
+        { min: 3, max: 24, message: "Length should be 3 to 24", trigger: "blur" },
+    ],
+    email: [
+        {
+            required: true,
+            message: "Please input Email",
+            trigger: "blur",
+        },
+    ],
+    password: [
+        {
+            required: true,
+            message: "Please input Password",
+            trigger: "blur",
+        },
+        { min: 6, max: 24, message: "Length should be 6 to 24", trigger: "blur" },
+    ],
+    password_confirmation: [
+        {
+            required: true,
+            message: "Please Confirm password",
+            trigger: "blur",
+        },
+        { min: 6, max: 24, message: "Length should be 6 to 24", trigger: "blur" },
     ],
 });
 
