@@ -10,7 +10,7 @@
 
 <body>
     <div id="app">
-        register
+        <register></register>
     </div>
 </body>
 
