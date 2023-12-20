@@ -19,8 +19,14 @@
                     <el-form-item label="Password" prop="password">
                         <el-input type="password" v-model="ruleForm.password" />
                     </el-form-item>
-                    <el-form-item label="Confirm password" prop="password_confirmation">
-                        <el-input type="password" v-model="ruleForm.password_confirmation" />
+                    <el-form-item
+                        label="Confirm password"
+                        prop="password_confirmation"
+                    >
+                        <el-input
+                            type="password"
+                            v-model="ruleForm.password_confirmation"
+                        />
                     </el-form-item>
                     <el-form-item>
                         <el-button
@@ -58,40 +64,16 @@ const ruleForm = reactive<RuleForm>({
     password_confirmation: "",
 });
 
-const rules = reactive<FormRules<RuleForm>>({
-    name: [
-        {
-            required: true,
-            message: "Please input Name",
-            trigger: "blur",
-        },
-        { min: 3, max: 24, message: "Length should be 3 to 24", trigger: "blur" },
-    ],
-    email: [
-        {
-            required: true,
-            message: "Please input Email",
-            trigger: "blur",
-        },
-    ],
-    password: [
-        {
-            required: true,
-            message: "Please input Password",
-            trigger: "blur",
-        },
-        { min: 6, max: 24, message: "Length should be 6 to 24", trigger: "blur" },
-    ],
-    password_confirmation: [
-        {
-            required: true,
-            message: "Please Confirm password",
-            trigger: "blur",
-        },
-        { min: 6, max: 24, message: "Length should be 6 to 24", trigger: "blur" },
-    ],
-});
 
+const password_confirmation = (rule: any, value: any, callback: any) => {
+    if (value === "") {
+        callback(new Error("Please input the password again"));
+    } else if (value !== ruleForm.password) {
+        callback(new Error("Two inputs don't match!"));
+    } else {
+        callback();
+    }
+};
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     await formEl.validate((valid, fields) => {
@@ -107,4 +89,53 @@ const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     formEl.resetFields();
 };
+
+const rules = reactive<FormRules<RuleForm>>({
+    name: [
+        {
+            required: true,
+            message: "Please input Name",
+            trigger: "blur",
+        },
+        {
+            min: 3,
+            max: 24,
+            message: "Length should be 3 to 24",
+            trigger: "blur",
+        },
+    ],
+    email: [
+        {
+            required: true,
+            message: "Please input Email",
+            trigger: "blur",
+        },
+    ],
+    password: [
+        {
+            required: true,
+            message: "Please input Password",
+            trigger: "blur",
+        },
+        {
+            min: 6,
+            max: 24,
+            message: "Length should be 6 to 24",
+            trigger: "blur",
+        },
+    ],
+    password_confirmation: [
+        {
+            required: true,
+            message: "Please confirm password",
+            trigger: "blur",
+        },
+        {
+            validator: password_confirmation,
+            message: "Password doesn't match",
+            trigger: "blur",
+        },
+    ],
+});
+
 </script>
