@@ -64,7 +64,6 @@ const ruleForm = reactive<RuleForm>({
     password_confirmation: "",
 });
 
-
 const password_confirmation = (rule: any, value: any, callback: any) => {
     if (value === "") {
         callback(new Error("Please input the password again"));
@@ -74,15 +73,21 @@ const password_confirmation = (rule: any, value: any, callback: any) => {
         callback();
     }
 };
-const submitForm = async (formEl: FormInstance | undefined) => {
+const submitForm = async (formEl) => {
     if (!formEl) return;
-    await formEl.validate((valid, fields) => {
-        if (valid) {
-            console.log("submit!");
-        } else {
-            console.log("error submit!", fields);
-        }
-    });
+    try {
+        await formEl.validate();
+        const data = {
+            name: ruleForm.name,
+            email: ruleForm.email,
+            password: ruleForm.password,
+            password_confirmation: ruleForm.password_confirmation,
+        };
+        const response = await axios.post("/api/register", data);
+        console.log(response);
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 const resetForm = (formEl: FormInstance | undefined) => {
@@ -137,5 +142,4 @@ const rules = reactive<FormRules<RuleForm>>({
         },
     ],
 });
-
 </script>
