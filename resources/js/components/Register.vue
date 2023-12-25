@@ -48,6 +48,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
+import { ElMessage } from "element-plus";
 
 interface RuleForm {
     name: string;
@@ -84,15 +85,33 @@ const submitForm = async (formEl) => {
             password_confirmation: ruleForm.password_confirmation,
         };
         const response = await axios.post("/api/register", data);
-        console.log(response);
+        if (response.data.success == true) {
+            ElMessage({
+                showClose: true,
+                message: "success",
+                type: "success",
+            });
+        } else {
+            ElMessage({
+                showClose: true,
+                message: JSON.stringify(response.data.message),
+                type: "error",
+            });
+        }
     } catch (error) {
         console.log(error);
+        ElMessage({
+            showClose: true,
+            message: "Oops, this is a error message.",
+            type: "error",
+        });
     }
 };
 
 const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     formEl.resetFields();
+    ElMessage("Form cleared");
 };
 
 const rules = reactive<FormRules<RuleForm>>({
