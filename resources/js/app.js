@@ -11,9 +11,11 @@ app.use(ElementPlus);
 
 
 import Register from './components/Register.vue';
+import Main from './components/Main.vue';
 app.use(store);
 
 app.component('register', Register);
+app.component('main', Main);
 
 
 app.mount('#app');

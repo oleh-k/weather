@@ -42,9 +42,6 @@
                 </el-form>
             </el-col>
         </el-row>
-        <div>
-            <p>token: {{ test.token }}</p>
-        </div>
     </div>
 </template>
 
@@ -52,7 +49,7 @@
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
-import { useStore } from 'vuex';
+import { useStore } from "vuex";
 
 const store = useStore();
 
@@ -74,9 +71,7 @@ const ruleForm = reactive<RuleForm>({
 interface Test {
     token: string;
 }
-const test = reactive<Test>({
-    token: store.getters.getToken
-});
+
 
 const password_confirmation = (rule: any, value: any, callback: any) => {
     if (value === "") {
@@ -104,8 +99,7 @@ const submitForm = async (formEl) => {
                 message: "success",
                 type: "success",
             });
-            test.token = response.data.token;
-            store.commit('setToken', response.data.token);
+            store.commit("setToken", response.data.token);
         } else {
             ElMessage({
                 showClose: true,
